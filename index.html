@@ -638,7 +638,10 @@ function _initFirebase(){
     // Pull latest data from cloud on startup
     _db.collection('shops').doc('om-sai-traders').get().then(doc=>{
       if(!doc.exists)return;
-      const d=doc.data(); let changed=false;
+      const d=doc.data();
+      const hasBills=d[K.bills]&&d[K.bills]!=='[]';
+      if(!hasBills)return;
+      let changed=false;
       Object.values(K).forEach(k=>{ if(d[k]){ localStorage.setItem(k,d[k]); changed=true; } });
       if(changed){ _refreshView(); showToast('☁ Cloud data loaded'); }
     }).catch(()=>{});
@@ -647,7 +650,10 @@ function _initFirebase(){
       if(doc.metadata.hasPendingWrites||doc.metadata.fromCache)return;
       if(Date.now()-_lastSave<3000)return; // ignore echo of our own write
       if(!doc.exists)return;
-      const d=doc.data(); let changed=false;
+      const d=doc.data();
+      const hasBills=d[K.bills]&&d[K.bills]!=='[]';
+      if(!hasBills)return;
+      let changed=false;
       Object.values(K).forEach(k=>{ if(d[k]!==undefined){ const cur=localStorage.getItem(k); if(cur!==d[k]){localStorage.setItem(k,d[k]);changed=true;} } });
       if(changed){ _refreshView(); showToast('☁ Synced from another device'); }
     });
@@ -2643,6 +2649,7 @@ function _pinUnlock(){
   window.scrollTo(0,0);
   setTimeout(()=>{ window.scrollTo(0,0); try{document.getElementById('main-content').scrollTop=0;}catch{} },150);
   try{ sessionStorage.setItem(PIN_SESSION,'1'); }catch{}
+  setTimeout(()=>{ try{ _refreshView(); }catch{} },200);
 }
 function _pinUpdateDots(){
   document.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<_pinEntry.length));
