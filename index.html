@@ -537,14 +537,57 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 
 <datalist id="prod-datalist"></datalist>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const SHOP = 'OM SAI TRADERS', PHONE = '7455923909';
 const K = { products:'ost_products', bills:'ost_bills', customers:'ost_customers', reminders:'ost_reminders', suppliers:'ost_suppliers', purchases:'ost_purchases', stockLog:'ost_stock_log' };
 function logStock(product,qty,type,ref){ try{ const log=load(K.stockLog); log.push({date:todayISO(),product,qty,type,ref,ts:Date.now()}); if(log.length>500) log.splice(0,log.length-500); save(K.stockLog,log); }catch{} }
 
+// --- FIREBASE CLOUD SYNC ---
+const _FB={apiKey:"AIzaSyAuLHJaybXfkgBOqys4q9gXIQkyszrgIwg",authDomain:"om-sai-traders-c9185.firebaseapp.com",projectId:"om-sai-traders-c9185",storageBucket:"om-sai-traders-c9185.firebasestorage.app",messagingSenderId:"380778139946",appId:"1:380778139946:web:07fa043371b9e31b9d4e53"};
+let _db=null,_lastSave=0;
+function _fbSave(key,json){ if(!_db)return; _db.collection('shops').doc('om-sai-traders').set({[key]:json},{merge:true}).catch(()=>{}); }
+function _initFirebase(){
+  try{
+    if(typeof firebase==='undefined')return;
+    firebase.initializeApp(_FB);
+    _db=firebase.firestore();
+    // Pull latest data from cloud on startup
+    _db.collection('shops').doc('om-sai-traders').get().then(doc=>{
+      if(!doc.exists)return;
+      const d=doc.data(); let changed=false;
+      Object.values(K).forEach(k=>{ if(d[k]){ localStorage.setItem(k,d[k]); changed=true; } });
+      if(changed){ _refreshView(); showToast('☁ Cloud data loaded'); }
+    }).catch(()=>{});
+    // Real-time listener — syncs changes from other devices
+    _db.collection('shops').doc('om-sai-traders').onSnapshot({includeMetadataChanges:true},doc=>{
+      if(doc.metadata.hasPendingWrites||doc.metadata.fromCache)return;
+      if(Date.now()-_lastSave<3000)return; // ignore echo of our own write
+      if(!doc.exists)return;
+      const d=doc.data(); let changed=false;
+      Object.values(K).forEach(k=>{ if(d[k]!==undefined){ const cur=localStorage.getItem(k); if(cur!==d[k]){localStorage.setItem(k,d[k]);changed=true;} } });
+      if(changed){ _refreshView(); showToast('☁ Synced from another device'); }
+    });
+  }catch(e){ console.warn('Firebase:',e); }
+}
+function _refreshView(){
+  try{
+    if(typeof currentSubPage==='undefined'||typeof currentTab==='undefined')return;
+    if(currentSubPage==='products') renderProducts();
+    else if(currentSubPage==='reminders') renderReminders();
+    else if(currentSubPage==='salesreport') renderSalesReport();
+    else if(currentSubPage==='inventory') renderInventory();
+    else if(currentSubPage==='suppliers') renderSuppliers();
+    else if(currentTab==='dashboard') renderDashboard();
+    else if(currentTab==='bills') renderBillsList();
+    else if(currentTab==='customers') renderCustomers();
+  }catch(e){}
+}
+
 // --- DATA LAYER ---
 function load(key){ try{ return JSON.parse(localStorage.getItem(key)||'null')||[] }catch{return []} }
-function save(key,data){ try{ localStorage.setItem(key,JSON.stringify(data)) }catch{} }
+function save(key,data){ try{ const json=JSON.stringify(data); localStorage.setItem(key,json); _lastSave=Date.now(); _fbSave(key,json); }catch{} }
 const getProducts  = ()=>load(K.products);
 const getBills     = ()=>load(K.bills);
 const getCustomers = ()=>load(K.customers);
@@ -2440,6 +2483,7 @@ function copyCollectionsList(){
 // --- INIT ---
 initSampleData();
 showTab('dashboard');
+_initFirebase();
 document.addEventListener('click',e=>{
   const overlay=document.getElementById('bill-overlay');
   if(overlay&&!overlay.hidden&&e.target===overlay){ overlay.hidden=true }
