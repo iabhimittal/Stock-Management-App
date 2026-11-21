@@ -2635,10 +2635,13 @@ let _pinEntry='', _pinMode='enter'; // 'enter' | 'set' | 'confirm' | 'change-old
 let _pinNewTemp='';
 function _pinUnlock(){
   document.getElementById('pin-screen').style.display='none';
+  document.documentElement.style.overflow='';
   document.body.style.overflow='';
-  document.body.style.position='';
+  // Force viewport recalculation on mobile
+  const mv=document.querySelector('meta[name=viewport]');
+  if(mv){ const c=mv.content; mv.content=c+',maximum-scale=1'; setTimeout(()=>{ mv.content=c; },100); }
   window.scrollTo(0,0);
-  document.getElementById('main-content').scrollTop=0;
+  setTimeout(()=>{ window.scrollTo(0,0); try{document.getElementById('main-content').scrollTop=0;}catch{} },150);
   try{ sessionStorage.setItem(PIN_SESSION,'1'); }catch{}
 }
 function _pinUpdateDots(){
@@ -2683,9 +2686,8 @@ function _startPinScreen(){
   const stored=localStorage.getItem(PIN_KEY);
   let sessOk=false; try{ sessOk=sessionStorage.getItem(PIN_SESSION)==='1'; }catch{}
   if(sessOk){ document.getElementById('pin-screen').style.display='none'; return; }
+  document.documentElement.style.overflow='hidden';
   document.body.style.overflow='hidden';
-  document.body.style.position='fixed';
-  document.body.style.width='100%';
   if(!stored){ _pinMode='set'; _pinSetLabel('Set a 4-digit PIN for your shop'); document.getElementById('pin-hint').textContent='Choose a PIN you will remember'; }
   else { _pinMode='enter'; _pinSetLabel('Enter PIN to continue'); }
 }
