@@ -380,7 +380,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
           <div class="meta-field">
             <label>Customer Name</label>
             <div style="display:flex;gap:6px">
-              <input type="text" id="bill-customer" list="cust-list" placeholder="Walk-in / type or pick" style="flex:1;min-width:0;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--surface);color:var(--fg);font-size:14px">
+              <input type="text" id="bill-customer" placeholder="Tap to pick or type new" autocomplete="off" readonly onfocus="showCustPicker()" style="flex:1;min-width:0;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--surface);color:var(--fg);font-size:14px;cursor:pointer">
               <button style="padding:6px 8px;border-radius:var(--r-sm);background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:600;flex-shrink:0;white-space:nowrap" onclick="showCustPicker()">👤</button>
             </div>
             <datalist id="cust-list"></datalist>
@@ -945,16 +945,28 @@ function filterCustPicker(q){
   const bills=getBills();
   const names=[...new Set([...custs.map(c=>({name:c.name,phone:c.phone})),...bills.map(b=>({name:b.customerName,phone:b.phone||''}))].map(x=>JSON.stringify(x)))].map(x=>JSON.parse(x)).filter(x=>x.name);
   const list=q?names.filter(x=>x.name.toLowerCase().includes(q.toLowerCase())):names;
-  document.getElementById('cust-picker-list').innerHTML=list.length?list.map(x=>
+  const q=document.getElementById('cust-picker-search').value.trim();
+  document.getElementById('cust-picker-list').innerHTML=(list.length?list.map(x=>
     `<div onclick="pickCustomer('${x.name.replace(/'/g,"\\'")}','${(x.phone||'').replace(/'/g,"\\'")}')\" style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer">
       <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:14px;flex-shrink:0">${escHtml(x.name[0].toUpperCase())}</div>
       <div><div style="font-weight:600;font-size:14px">${escHtml(x.name)}</div>${x.phone?`<div style="font-size:12px;color:var(--fg-muted)">${escHtml(x.phone)}</div>`:''}</div>
     </div>`
-  ).join(''):'<div style="padding:24px;text-align:center;color:var(--fg-muted)">No customers found</div>';
+  ).join(''):'<div style="padding:16px;text-align:center;color:var(--fg-muted);font-size:13px">No saved customer found</div>')
+  +(q?`<div onclick="custPickerNewName()" style="padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;background:var(--accent-soft)"><div style="width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;flex-shrink:0">+</div><div style="font-weight:600;font-size:14px;color:var(--accent)">Use "${escHtml(q)}" as new customer</div></div>`:'');
 }
 function pickCustomer(name,phone){
-  document.getElementById('bill-customer').value=name;
+  const inp=document.getElementById('bill-customer');
+  inp.removeAttribute('readonly');
+  inp.value=name;
   if(phone) document.getElementById('bill-phone').value=phone;
+  closeCustPicker();
+}
+function custPickerNewName(){
+  const q=document.getElementById('cust-picker-search').value.trim();
+  if(!q)return;
+  const inp=document.getElementById('bill-customer');
+  inp.removeAttribute('readonly');
+  inp.value=q;
   closeCustPicker();
 }
 function updateProdDatalist(){
@@ -2623,6 +2635,10 @@ let _pinEntry='', _pinMode='enter'; // 'enter' | 'set' | 'confirm' | 'change-old
 let _pinNewTemp='';
 function _pinUnlock(){
   document.getElementById('pin-screen').style.display='none';
+  document.body.style.overflow='';
+  document.body.style.position='';
+  window.scrollTo(0,0);
+  document.getElementById('main-content').scrollTop=0;
   try{ sessionStorage.setItem(PIN_SESSION,'1'); }catch{}
 }
 function _pinUpdateDots(){
@@ -2655,7 +2671,7 @@ function _pinSubmit(){
   } else if(_pinMode==='change-new'){
     _pinNewTemp=_pinEntry; _pinEntry=''; _pinUpdateDots(); _pinMode='change-confirm'; _pinSetLabel('Confirm new PIN');
   } else if(_pinMode==='change-confirm'){
-    if(_pinEntry===_pinNewTemp){ localStorage.setItem(PIN_KEY,_pinEntry); showToast('PIN changed'); document.getElementById('pin-screen').style.display='none'; }
+    if(_pinEntry===_pinNewTemp){ localStorage.setItem(PIN_KEY,_pinEntry); showToast('PIN changed'); _pinUnlock(); }
     else { _pinEntry=''; _pinUpdateDots(); _pinShake(); _pinSetLabel('PINs did not match'); _pinMode='change-new'; _pinNewTemp=''; }
   } else { // enter mode
     if(_pinEntry===stored){ _pinUnlock(); }
@@ -2667,6 +2683,9 @@ function _startPinScreen(){
   const stored=localStorage.getItem(PIN_KEY);
   let sessOk=false; try{ sessOk=sessionStorage.getItem(PIN_SESSION)==='1'; }catch{}
   if(sessOk){ document.getElementById('pin-screen').style.display='none'; return; }
+  document.body.style.overflow='hidden';
+  document.body.style.position='fixed';
+  document.body.style.width='100%';
   if(!stored){ _pinMode='set'; _pinSetLabel('Set a 4-digit PIN for your shop'); document.getElementById('pin-hint').textContent='Choose a PIN you will remember'; }
   else { _pinMode='enter'; _pinSetLabel('Enter PIN to continue'); }
 }
