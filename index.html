@@ -1,13 +1,6 @@
-<!doctype html><html data-theme="light"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>OM SAI TRADERS</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="theme-color" content="#1a7a5e">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="OM SAI">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.svg">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
 /* === DESIGN TOKENS — ledger-book teal, warm neutral ground === */
@@ -271,50 +264,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .toast{position:fixed;bottom:calc(var(--nav-h)+16px+env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#111827;color:#F9FAFB;padding:10px 20px;border-radius:30px;font-size:13px;font-weight:600;z-index:300;white-space:nowrap;animation:toastIn .2s ease,toastOut .3s ease 1.6s forwards}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 @keyframes toastOut{to{opacity:0;transform:translateX(-50%) translateY(10px)}}
-@keyframes pinShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 .num{font-variant-numeric:tabular-nums}
-
-/* Mobile responsive fixes */
-@media (max-width: 420px) {
-  .bill-meta-row.three { grid-template-columns: 1fr 1fr; }
-  .item-row-nums { grid-template-columns: 1fr 1fr; }
-  .form-row.col3 { grid-template-columns: 1fr 1fr; }
-  .item-field input { font-size: 13px; padding: 6px 6px; }
-  .bill-no-display { font-size: 15px; }
-}
-</style>
-
-<!-- PIN Screen -->
-<div id="pin-screen" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
-  <div style="text-align:center;margin-bottom:32px">
-    <div style="font-size:32px;margin-bottom:8px">🔒</div>
-    <div style="font-size:20px;font-weight:800;color:var(--accent);font-family:'Space Grotesk',sans-serif">OM SAI TRADERS</div>
-    <div style="font-size:13px;color:var(--fg-muted);margin-top:4px" id="pin-label">Enter PIN to continue</div>
-  </div>
-  <div style="display:flex;gap:12px;margin-bottom:32px" id="pin-dots">
-    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
-  </div>
-  <div style="display:grid;grid-template-columns:repeat(3,72px);gap:12px" id="pin-pad">
-    <button class="pin-btn" onclick="_pinKey('1')">1</button>
-    <button class="pin-btn" onclick="_pinKey('2')">2</button>
-    <button class="pin-btn" onclick="_pinKey('3')">3</button>
-    <button class="pin-btn" onclick="_pinKey('4')">4</button>
-    <button class="pin-btn" onclick="_pinKey('5')">5</button>
-    <button class="pin-btn" onclick="_pinKey('6')">6</button>
-    <button class="pin-btn" onclick="_pinKey('7')">7</button>
-    <button class="pin-btn" onclick="_pinKey('8')">8</button>
-    <button class="pin-btn" onclick="_pinKey('9')">9</button>
-    <button class="pin-btn" onclick="_pinClear()" style="font-size:13px;color:var(--fg-muted)">Clear</button>
-    <button class="pin-btn" onclick="_pinKey('0')">0</button>
-    <button class="pin-btn" onclick="_pinBack()" style="font-size:18px">⌫</button>
-  </div>
-  <div style="margin-top:24px;font-size:11px;color:var(--fg-muted)" id="pin-hint"></div>
-</div>
-<style>
-.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:transparent;transition:background .15s}
-.pin-dot.filled{background:var(--accent);border-color:var(--accent)}
-.pin-btn{width:72px;height:72px;border-radius:50%;border:2px solid var(--border);background:var(--surface);color:var(--fg);font-size:22px;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:background .1s}
-.pin-btn:active{background:var(--accent);color:#fff;border-color:var(--accent)}
 </style>
 
 <!-- App shell -->
@@ -379,10 +329,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
         <div class="bill-meta-row">
           <div class="meta-field">
             <label>Customer Name</label>
-            <div style="display:flex;gap:6px">
-              <input type="text" id="bill-customer" placeholder="Tap to pick or type new" autocomplete="off" readonly onfocus="showCustPicker()" style="flex:1;min-width:0;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--surface);color:var(--fg);font-size:14px;cursor:pointer">
-              <button style="padding:6px 8px;border-radius:var(--r-sm);background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:600;flex-shrink:0;white-space:nowrap" onclick="showCustPicker()">👤</button>
-            </div>
+            <input type="text" id="bill-customer" list="cust-list" placeholder="Walk-in Customer">
             <datalist id="cust-list"></datalist>
           </div>
           <div class="meta-field">
@@ -495,11 +442,6 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
           <div class="more-item-body"><h3>Sales Report</h3><p>Daily sales by date, cash/credit/UPI breakdown</p></div>
           <div class="more-item-arrow"><svg viewBox="0 0 20 20"><polyline points="7 4 13 10 7 16"/></svg></div>
         </div>
-        <div class="more-item" onclick="changePinFlow()" style="cursor:pointer">
-          <div class="more-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-          <div class="more-item-body"><h3>Change PIN</h3><p>Update your app lock PIN</p></div>
-          <div class="more-item-arrow"><svg viewBox="0 0 20 20"><polyline points="7 4 13 10 7 16"/></svg></div>
-        </div>
       </div>
     </section>
 
@@ -594,30 +536,6 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 </div>
 
 <datalist id="prod-datalist"></datalist>
-
-<!-- Product Picker bottom sheet -->
-<div id="prod-picker" style="position:fixed;inset:0;z-index:500;display:none">
-  <div onclick="closeProdPicker()" style="position:absolute;inset:0;background:rgba(0,0,0,.45)"></div>
-  <div style="position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:20px 20px 0 0;max-height:75vh;display:flex;flex-direction:column">
-    <div style="padding:16px 16px 10px;border-bottom:1px solid var(--border)">
-      <div style="font-size:15px;font-weight:700;margin-bottom:10px;font-family:'Space Grotesk',sans-serif">Select Product</div>
-      <input id="prod-picker-search" type="search" class="form-input" placeholder="Search products…" oninput="filterProdPicker(this.value)" style="font-size:14px">
-    </div>
-    <div id="prod-picker-list" style="overflow-y:auto;padding:8px 0;flex:1"></div>
-  </div>
-</div>
-
-<!-- Customer Picker bottom sheet -->
-<div id="cust-picker" style="position:fixed;inset:0;z-index:500;display:none">
-  <div onclick="closeCustPicker()" style="position:absolute;inset:0;background:rgba(0,0,0,.45)"></div>
-  <div style="position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:20px 20px 0 0;max-height:65vh;display:flex;flex-direction:column">
-    <div style="padding:16px 16px 10px;border-bottom:1px solid var(--border)">
-      <div style="font-size:15px;font-weight:700;margin-bottom:10px;font-family:'Space Grotesk',sans-serif">Select Customer</div>
-      <input id="cust-picker-search" type="search" class="form-input" placeholder="Search customers…" oninput="filterCustPicker(this.value)" style="font-size:14px">
-    </div>
-    <div id="cust-picker-list" style="overflow-y:auto;padding:8px 0;flex:1"></div>
-  </div>
-</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -903,72 +821,6 @@ function updateCustDatalist(){
   const names=[...new Set([...custs.map(c=>c.name),...bills.map(b=>b.customerName)])].filter(Boolean);
   document.getElementById('cust-list').innerHTML=names.map(n=>`<option value="${n}">`).join('');
 }
-
-// --- PRODUCT PICKER ---
-let _ppItemId=null;
-function showProdPicker(itemId){
-  _ppItemId=itemId;
-  document.getElementById('prod-picker-search').value='';
-  filterProdPicker('');
-  document.getElementById('prod-picker').style.display='block';
-  setTimeout(()=>document.getElementById('prod-picker-search').focus(),100);
-}
-function closeProdPicker(){ document.getElementById('prod-picker').style.display='none'; _ppItemId=null; }
-function filterProdPicker(q){
-  const prods=getProducts();
-  const list=q?prods.filter(p=>p.name.toLowerCase().includes(q.toLowerCase())):prods;
-  document.getElementById('prod-picker-list').innerHTML=list.length?list.map(p=>
-    `<div onclick="pickProduct('${p.name.replace(/'/g,"\\'")}',${p.price||0},${p.discPct||0})" style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;cursor:pointer;active:background:var(--accent-soft)">
-      <div><div style="font-weight:600;font-size:14px">${escHtml(p.name)}</div><div style="font-size:11px;color:var(--fg-muted)">${escHtml(p.category||'')}</div></div>
-      <div style="text-align:right;flex-shrink:0"><div style="font-weight:700;color:var(--accent);font-size:14px">₹${p.price||0}</div>${p.discPct?`<div style="font-size:11px;color:var(--fg-muted)">${p.discPct}% off</div>`:''}</div>
-    </div>`
-  ).join(''):'<div style="padding:24px;text-align:center;color:var(--fg-muted)">No products found</div>';
-}
-function pickProduct(name,price,disc){
-  if(!_ppItemId)return;
-  const item=billItems.find(x=>x.id===_ppItemId);
-  if(item){ item.product=name; item.price=price; item.disc=disc; item.qty=item.qty||1; calcItem(item); }
-  closeProdPicker();
-  renderBillItems(); refreshTotals();
-}
-
-// --- CUSTOMER PICKER ---
-function showCustPicker(){
-  document.getElementById('cust-picker-search').value='';
-  filterCustPicker('');
-  document.getElementById('cust-picker').style.display='block';
-  setTimeout(()=>document.getElementById('cust-picker-search').focus(),100);
-}
-function closeCustPicker(){ document.getElementById('cust-picker').style.display='none'; }
-function filterCustPicker(q){
-  const custs=getCustomers();
-  const bills=getBills();
-  const names=[...new Set([...custs.map(c=>({name:c.name,phone:c.phone})),...bills.map(b=>({name:b.customerName,phone:b.phone||''}))].map(x=>JSON.stringify(x)))].map(x=>JSON.parse(x)).filter(x=>x.name);
-  const list=q?names.filter(x=>x.name.toLowerCase().includes(q.toLowerCase())):names;
-  const q=document.getElementById('cust-picker-search').value.trim();
-  document.getElementById('cust-picker-list').innerHTML=(list.length?list.map(x=>
-    `<div onclick="pickCustomer('${x.name.replace(/'/g,"\\'")}','${(x.phone||'').replace(/'/g,"\\'")}')\" style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer">
-      <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:14px;flex-shrink:0">${escHtml(x.name[0].toUpperCase())}</div>
-      <div><div style="font-weight:600;font-size:14px">${escHtml(x.name)}</div>${x.phone?`<div style="font-size:12px;color:var(--fg-muted)">${escHtml(x.phone)}</div>`:''}</div>
-    </div>`
-  ).join(''):'<div style="padding:16px;text-align:center;color:var(--fg-muted);font-size:13px">No saved customer found</div>')
-  +(q?`<div onclick="custPickerNewName()" style="padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;background:var(--accent-soft)"><div style="width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;flex-shrink:0">+</div><div style="font-weight:600;font-size:14px;color:var(--accent)">Use "${escHtml(q)}" as new customer</div></div>`:'');
-}
-function pickCustomer(name,phone){
-  const inp=document.getElementById('bill-customer');
-  inp.removeAttribute('readonly');
-  inp.value=name;
-  if(phone) document.getElementById('bill-phone').value=phone;
-  closeCustPicker();
-}
-function custPickerNewName(){
-  const q=document.getElementById('cust-picker-search').value.trim();
-  if(!q)return;
-  const inp=document.getElementById('bill-customer');
-  inp.removeAttribute('readonly');
-  inp.value=q;
-  closeCustPicker();
-}
 function updateProdDatalist(){
   const prods=getProducts();
   document.getElementById('prod-datalist').innerHTML=
@@ -995,8 +847,7 @@ function renderBillItems(){
     }
     return `<div class="item-row" id="item-${item.id}">
       <div class="item-row-top">
-        <input type="text" list="prod-datalist" placeholder="Type or tap 📋 to pick…" value="${item.product}" oninput="onProdInput('${item.id}',this.value)" onchange="onProdChange('${item.id}',this.value)">
-        <button style="padding:6px 8px;border-radius:var(--r-sm);background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:600;flex-shrink:0;white-space:nowrap" onclick="showProdPicker('${item.id}')">📋</button>
+        <input type="text" list="prod-datalist" placeholder="Type any item name or pick from list…" value="${item.product}" oninput="onProdInput('${item.id}',this.value)" onchange="onProdChange('${item.id}',this.value)">
         <button class="del-btn" onclick="removeItem('${item.id}')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg></button>
       </div>
       ${isOther?`<div style="margin-top:4px"><input type="text" class="form-input" placeholder="Enter product description…" value="${escHtml(item.customName||'')}" oninput="updateCustomName('${item.id}',this.value)" style="font-size:13px"></div>`:''}
@@ -2629,79 +2480,10 @@ function copyCollectionsList(){
   });
 }
 
-// --- PIN LOCK ---
-const PIN_KEY='ost_pin', PIN_SESSION='ost_pin_sess';
-let _pinEntry='', _pinMode='enter'; // 'enter' | 'set' | 'confirm' | 'change-old' | 'change-new' | 'change-confirm'
-let _pinNewTemp='';
-function _pinUnlock(){
-  document.getElementById('pin-screen').style.display='none';
-  document.documentElement.style.overflow='';
-  document.body.style.overflow='';
-  // Force viewport recalculation on mobile
-  const mv=document.querySelector('meta[name=viewport]');
-  if(mv){ const c=mv.content; mv.content=c+',maximum-scale=1'; setTimeout(()=>{ mv.content=c; },100); }
-  window.scrollTo(0,0);
-  setTimeout(()=>{ window.scrollTo(0,0); try{document.getElementById('main-content').scrollTop=0;}catch{} },150);
-  try{ sessionStorage.setItem(PIN_SESSION,'1'); }catch{}
-}
-function _pinUpdateDots(){
-  document.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<_pinEntry.length));
-}
-function _pinShake(){
-  const d=document.getElementById('pin-dots');
-  d.style.animation='none'; d.offsetHeight;
-  d.style.animation='pinShake .3s ease';
-}
-function _pinKey(k){
-  if(_pinEntry.length>=4)return;
-  _pinEntry+=k; _pinUpdateDots();
-  if(_pinEntry.length===4) setTimeout(_pinSubmit,120);
-}
-function _pinBack(){ if(_pinEntry.length) _pinEntry=_pinEntry.slice(0,-1); _pinUpdateDots(); }
-function _pinClear(){ _pinEntry=''; _pinUpdateDots(); }
-function _pinSetLabel(msg){ document.getElementById('pin-label').textContent=msg; }
-function _pinSubmit(){
-  const stored=localStorage.getItem(PIN_KEY);
-  if(_pinMode==='set'){
-    _pinNewTemp=_pinEntry; _pinEntry=''; _pinUpdateDots();
-    _pinMode='confirm'; _pinSetLabel('Confirm your new PIN');
-  } else if(_pinMode==='confirm'){
-    if(_pinEntry===_pinNewTemp){ localStorage.setItem(PIN_KEY,_pinEntry); _pinUnlock(); showToast('PIN set successfully'); }
-    else { _pinEntry=''; _pinUpdateDots(); _pinShake(); _pinSetLabel('PINs did not match — try again'); _pinMode='set'; _pinNewTemp=''; }
-  } else if(_pinMode==='change-old'){
-    if(_pinEntry===stored){ _pinEntry=''; _pinUpdateDots(); _pinMode='change-new'; _pinSetLabel('Enter new PIN'); }
-    else { _pinEntry=''; _pinUpdateDots(); _pinShake(); _pinSetLabel('Wrong PIN'); }
-  } else if(_pinMode==='change-new'){
-    _pinNewTemp=_pinEntry; _pinEntry=''; _pinUpdateDots(); _pinMode='change-confirm'; _pinSetLabel('Confirm new PIN');
-  } else if(_pinMode==='change-confirm'){
-    if(_pinEntry===_pinNewTemp){ localStorage.setItem(PIN_KEY,_pinEntry); showToast('PIN changed'); _pinUnlock(); }
-    else { _pinEntry=''; _pinUpdateDots(); _pinShake(); _pinSetLabel('PINs did not match'); _pinMode='change-new'; _pinNewTemp=''; }
-  } else { // enter mode
-    if(_pinEntry===stored){ _pinUnlock(); }
-    else { _pinEntry=''; _pinUpdateDots(); _pinShake(); _pinSetLabel('Wrong PIN — try again'); }
-  }
-  if(_pinMode!=='enter'&&_pinMode!=='set') _pinEntry='';
-}
-function _startPinScreen(){
-  const stored=localStorage.getItem(PIN_KEY);
-  let sessOk=false; try{ sessOk=sessionStorage.getItem(PIN_SESSION)==='1'; }catch{}
-  if(sessOk){ document.getElementById('pin-screen').style.display='none'; return; }
-  document.documentElement.style.overflow='hidden';
-  document.body.style.overflow='hidden';
-  if(!stored){ _pinMode='set'; _pinSetLabel('Set a 4-digit PIN for your shop'); document.getElementById('pin-hint').textContent='Choose a PIN you will remember'; }
-  else { _pinMode='enter'; _pinSetLabel('Enter PIN to continue'); }
-}
-function changePinFlow(){
-  document.getElementById('pin-screen').style.display='flex';
-  _pinEntry=''; _pinUpdateDots(); _pinMode='change-old'; _pinSetLabel('Enter current PIN');
-}
-
 // --- INIT ---
 initSampleData();
 showTab('dashboard');
 _initFirebase();
-_startPinScreen();
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 document.addEventListener('click',e=>{
   const overlay=document.getElementById('bill-overlay');
   if(overlay&&!overlay.hidden&&e.target===overlay){ overlay.hidden=true }
