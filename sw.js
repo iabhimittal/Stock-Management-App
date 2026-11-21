@@ -1,4 +1,4 @@
-const CACHE = 'omsai-v1';
+const CACHE = 'omsai-v2';
 const ASSETS = ['./','./index.html','./manifest.json','./icon.svg'];
 
 self.addEventListener('install', e => {
