@@ -1,6 +1,13 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>OM SAI TRADERS</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#1a7a5e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OM SAI">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
 /* === DESIGN TOKENS — ledger-book teal, warm neutral ground === */
@@ -264,7 +271,41 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .toast{position:fixed;bottom:calc(var(--nav-h)+16px+env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#111827;color:#F9FAFB;padding:10px 20px;border-radius:30px;font-size:13px;font-weight:600;z-index:300;white-space:nowrap;animation:toastIn .2s ease,toastOut .3s ease 1.6s forwards}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 @keyframes toastOut{to{opacity:0;transform:translateX(-50%) translateY(10px)}}
+@keyframes pinShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 .num{font-variant-numeric:tabular-nums}
+</style>
+
+<!-- PIN Screen -->
+<div id="pin-screen" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
+  <div style="text-align:center;margin-bottom:32px">
+    <div style="font-size:32px;margin-bottom:8px">🔒</div>
+    <div style="font-size:20px;font-weight:800;color:var(--accent);font-family:'Space Grotesk',sans-serif">OM SAI TRADERS</div>
+    <div style="font-size:13px;color:var(--fg-muted);margin-top:4px" id="pin-label">Enter PIN to continue</div>
+  </div>
+  <div style="display:flex;gap:12px;margin-bottom:32px" id="pin-dots">
+    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,72px);gap:12px" id="pin-pad">
+    <button class="pin-btn" onclick="_pinKey('1')">1</button>
+    <button class="pin-btn" onclick="_pinKey('2')">2</button>
+    <button class="pin-btn" onclick="_pinKey('3')">3</button>
+    <button class="pin-btn" onclick="_pinKey('4')">4</button>
+    <button class="pin-btn" onclick="_pinKey('5')">5</button>
+    <button class="pin-btn" onclick="_pinKey('6')">6</button>
+    <button class="pin-btn" onclick="_pinKey('7')">7</button>
+    <button class="pin-btn" onclick="_pinKey('8')">8</button>
+    <button class="pin-btn" onclick="_pinKey('9')">9</button>
+    <button class="pin-btn" onclick="_pinClear()" style="font-size:13px;color:var(--fg-muted)">Clear</button>
+    <button class="pin-btn" onclick="_pinKey('0')">0</button>
+    <button class="pin-btn" onclick="_pinBack()" style="font-size:18px">⌫</button>
+  </div>
+  <div style="margin-top:24px;font-size:11px;color:var(--fg-muted)" id="pin-hint"></div>
+</div>
+<style>
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:transparent;transition:background .15s}
+.pin-dot.filled{background:var(--accent);border-color:var(--accent)}
+.pin-btn{width:72px;height:72px;border-radius:50%;border:2px solid var(--border);background:var(--surface);color:var(--fg);font-size:22px;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:background .1s}
+.pin-btn:active{background:var(--accent);color:#fff;border-color:var(--accent)}
 </style>
 
 <!-- App shell -->
@@ -440,6 +481,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
         <div class="more-item" data-goto="sales-report">
           <div class="more-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
           <div class="more-item-body"><h3>Sales Report</h3><p>Daily sales by date, cash/credit/UPI breakdown</p></div>
+          <div class="more-item-arrow"><svg viewBox="0 0 20 20"><polyline points="7 4 13 10 7 16"/></svg></div>
+        </div>
+        <div class="more-item" onclick="changePinFlow()" style="cursor:pointer">
+          <div class="more-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="more-item-body"><h3>Change PIN</h3><p>Update your app lock PIN</p></div>
           <div class="more-item-arrow"><svg viewBox="0 0 20 20"><polyline points="7 4 13 10 7 16"/></svg></div>
         </div>
       </div>
@@ -2480,10 +2526,70 @@ function copyCollectionsList(){
   });
 }
 
+// --- PIN LOCK ---
+const PIN_KEY='ost_pin', PIN_SESSION='ost_pin_sess';
+let _pinEntry='', _pinMode='enter'; // 'enter' | 'set' | 'confirm' | 'change-old' | 'change-new' | 'change-confirm'
+let _pinNewTemp='';
+function _pinUnlock(){
+  document.getElementById('pin-screen').style.display='none';
+  try{ sessionStorage.setItem(PIN_SESSION,'1'); }catch{}
+}
+function _pinUpdateDots(){
+  document.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<_pinEntry.length));
+}
+function _pinShake(){
+  const d=document.getElementById('pin-dots');
+  d.style.animation='none'; d.offsetHeight;
+  d.style.animation='pinShake .3s ease';
+}
+function _pinKey(k){
+  if(_pinEntry.length>=4)return;
+  _pinEntry+=k; _pinUpdateDots();
+  if(_pinEntry.length===4) setTimeout(_pinSubmit,120);
+}
+function _pinBack(){ if(_pinEntry.length) _pinEntry=_pinEntry.slice(0,-1); _pinUpdateDots(); }
+function _pinClear(){ _pinEntry=''; _pinUpdateDots(); }
+function _pinSetLabel(msg){ document.getElementById('pin-label').textContent=msg; }
+function _pinSubmit(){
+  const stored=localStorage.getItem(PIN_KEY);
+  if(_pinMode==='set'){
+    _pinNewTemp=_pinEntry; _pinEntry=''; _pinUpdateDots();
+    _pinMode='confirm'; _pinSetLabel('Confirm your new PIN');
+  } else if(_pinMode==='confirm'){
+    if(_pinEntry===_pinNewTemp){ localStorage.setItem(PIN_KEY,_pinEntry); _pinUnlock(); showToast('PIN set successfully'); }
+    else { _pinEntry=''; _pinUpdateDots(); _pinShake(); _pinSetLabel('PINs did not match — try again'); _pinMode='set'; _pinNewTemp=''; }
+  } else if(_pinMode==='change-old'){
+    if(_pinEntry===stored){ _pinEntry=''; _pinUpdateDots(); _pinMode='change-new'; _pinSetLabel('Enter new PIN'); }
+    else { _pinEntry=''; _pinUpdateDots(); _pinShake(); _pinSetLabel('Wrong PIN'); }
+  } else if(_pinMode==='change-new'){
+    _pinNewTemp=_pinEntry; _pinEntry=''; _pinUpdateDots(); _pinMode='change-confirm'; _pinSetLabel('Confirm new PIN');
+  } else if(_pinMode==='change-confirm'){
+    if(_pinEntry===_pinNewTemp){ localStorage.setItem(PIN_KEY,_pinEntry); showToast('PIN changed'); document.getElementById('pin-screen').style.display='none'; }
+    else { _pinEntry=''; _pinUpdateDots(); _pinShake(); _pinSetLabel('PINs did not match'); _pinMode='change-new'; _pinNewTemp=''; }
+  } else { // enter mode
+    if(_pinEntry===stored){ _pinUnlock(); }
+    else { _pinEntry=''; _pinUpdateDots(); _pinShake(); _pinSetLabel('Wrong PIN — try again'); }
+  }
+  if(_pinMode!=='enter'&&_pinMode!=='set') _pinEntry='';
+}
+function _startPinScreen(){
+  const stored=localStorage.getItem(PIN_KEY);
+  let sessOk=false; try{ sessOk=sessionStorage.getItem(PIN_SESSION)==='1'; }catch{}
+  if(sessOk){ document.getElementById('pin-screen').style.display='none'; return; }
+  if(!stored){ _pinMode='set'; _pinSetLabel('Set a 4-digit PIN for your shop'); document.getElementById('pin-hint').textContent='Choose a PIN you will remember'; }
+  else { _pinMode='enter'; _pinSetLabel('Enter PIN to continue'); }
+}
+function changePinFlow(){
+  document.getElementById('pin-screen').style.display='flex';
+  _pinEntry=''; _pinUpdateDots(); _pinMode='change-old'; _pinSetLabel('Enter current PIN');
+}
+
 // --- INIT ---
 initSampleData();
 showTab('dashboard');
 _initFirebase();
+_startPinScreen();
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 document.addEventListener('click',e=>{
   const overlay=document.getElementById('bill-overlay');
   if(overlay&&!overlay.hidden&&e.target===overlay){ overlay.hidden=true }

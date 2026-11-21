@@ -1,6 +1,6 @@
 # OM SAI TRADERS — Shop Management App
 
-A complete, offline-first shop management web app for **OM SAI TRADERS** .  
+A complete, offline-first shop management web app for **OM SAI TRADERS** (📞 7455923909).  
 Built as a single HTML file — no server, no database, no installation required.
 
 ## Features
